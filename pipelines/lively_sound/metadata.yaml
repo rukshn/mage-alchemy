@@ -1,0 +1,480 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - traverse_xml_tree
+  - traverse_postlab_xml_tree
+  - load_lookup_tables_table_f7
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: load-lookup-tables
+  retry_config: null
+  status: updated
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: load_lookup_tables
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - traverse_xml_tree
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: build_form_stucture
+  retry_config: null
+  status: updated
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - load_xml_xform
+  uuid: build_form_stucture
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - traverse_postlab_xml_tree
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: build_post_lab_form_structure
+  replicated_block: build_form_stucture
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - load_post_lab_xml
+  uuid: build_post_lab_form_structure
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - parse_binds
+  - parse_body
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: traverse_xml_tree
+  retry_config: null
+  status: updated
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - build_form_stucture
+  - load_lookup_tables
+  uuid: traverse_xml_tree
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - parse_binds_post_test
+  - parse_post_lab_body
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: traverse_postlab_xml_tree
+  replicated_block: traverse_xml_tree
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - build_post_lab_form_structure
+  - load_lookup_tables
+  uuid: traverse_postlab_xml_tree
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_source:
+      path: data_loaders/load_xml_xform.py
+  downstream_blocks:
+  - build_form_stucture
+  - parse_binds
+  - parse_body
+  - fill_labels
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: load_xml_xform
+  retry_config: null
+  status: updated
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: load_xml_xform
+- all_upstream_blocks_executed: false
+  color: null
+  configuration:
+    dynamic: false
+  downstream_blocks:
+  - parse_body
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: parse_binds
+  retry_config: null
+  status: updated
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - empty_block
+  - traverse_xml_tree
+  - load_xml_xform
+  uuid: parse_binds
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - parse_post_lab_body
+  - generate_task_strings
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: parse_binds_post_test
+  replicated_block: parse_binds
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - read_pre_test_xlsx
+  - traverse_postlab_xml_tree
+  - load_post_lab_xml
+  uuid: parse_binds_post_test
+- all_upstream_blocks_executed: false
+  color: null
+  configuration:
+    file_source:
+      path: transformers/parse_body.py
+  downstream_blocks:
+  - export_excel
+  - fill_labels
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: parse_body
+  retry_config: null
+  status: updated
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - parse_binds
+  - traverse_xml_tree
+  - load_xml_xform
+  uuid: parse_body
+- all_upstream_blocks_executed: false
+  color: null
+  configuration:
+    file_source:
+      path: transformers/parse_body.py
+  downstream_blocks:
+  - post_lab_fill_labels
+  - export_postlab_excel
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: parse_post_lab_body
+  replicated_block: parse_body
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - parse_binds_post_test
+  - traverse_postlab_xml_tree
+  - load_post_lab_xml
+  uuid: parse_post_lab_body
+- all_upstream_blocks_executed: false
+  color: null
+  configuration:
+    file_source:
+      path: transformers/fill_labels.py
+  downstream_blocks:
+  - refine_dataframe
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: fill_labels
+  retry_config: null
+  status: updated
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - parse_body
+  - load_xml_xform
+  uuid: fill_labels
+- all_upstream_blocks_executed: false
+  color: null
+  configuration:
+    file_source:
+      path: transformers/fill_labels.py
+  downstream_blocks:
+  - refine_postlab_dataframe
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: post_lab_fill_labels
+  replicated_block: fill_labels
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - parse_post_lab_body
+  - load_post_lab_xml
+  uuid: post_lab_fill_labels
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - export_excel
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: refine_dataframe
+  retry_config: null
+  status: updated
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - fill_labels
+  - load_params
+  uuid: refine_dataframe
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - export_postlab_excel
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: refine_postlab_dataframe
+  replicated_block: refine_dataframe
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - post_lab_fill_labels
+  - load_params
+  uuid: refine_postlab_dataframe
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - refine_dataframe
+  - export_excel
+  - refine_postlab_dataframe
+  - export_postlab_excel
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: load_params
+  retry_config: null
+  status: updated
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: load_params
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - read_pre_test_xlsx
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: export_excel
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - refine_dataframe
+  - parse_body
+  - load_params
+  uuid: export_excel
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - parse_binds_post_test
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: read_pre_test_xlsx
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: data_loader
+  upstream_blocks:
+  - export_excel
+  uuid: read_pre_test_xlsx
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: export_postlab_excel
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - refine_postlab_dataframe
+  - load_params
+  - parse_post_lab_body
+  uuid: export_postlab_excel
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - export_task_strings
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: generate_task_strings
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - parse_binds_post_test
+  uuid: generate_task_strings
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: export_task_strings
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - generate_task_strings
+  uuid: export_task_strings
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - parse_binds
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: empty_block
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: empty_block
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - build_post_lab_form_structure
+  - parse_binds_post_test
+  - parse_post_lab_body
+  - post_lab_fill_labels
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: load_post_lab_xml
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: load_post_lab_xml
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals:
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: post_lab_flow
+  retry_config: null
+  status: updated
+  timeout: null
+  type: conditional
+  upstream_blocks:
+  - read_pre_test_xlsx
+  - load_post_lab_xml
+  uuid: post_lab_flow
+created_at: '2024-03-01 10:13:55.548820+00:00'
+data_integration: null
+description: null
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: lively sound
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags: []
+type: python
+uuid: lively_sound
+variables_dir: /home/src/mage_data/your_first_project
+widgets:
+- all_upstream_blocks_executed: false
+  color: null
+  configuration:
+    chart_type: table
+    limit: 10
+    x: x
+    y: y
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: load_lookup_tables_table_f7
+  retry_config: null
+  status: failed
+  timeout: null
+  type: chart
+  upstream_blocks:
+  - load_lookup_tables
+  uuid: load_lookup_tables_table_f7
